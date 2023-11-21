@@ -40,7 +40,7 @@ async function getStreamMetadata(channelLogin) {
     }
 
     const responseJson = await res.json();
-    console.log("response:", responseJson);
+    return responseJson;
 }
 
 async function getPlaybackAccessToken(channelLogin) {
@@ -75,13 +75,12 @@ async function getPlaybackAccessToken(channelLogin) {
         process.exit(1);
     }
 
-    console.log("response:", responseJson);
     return responseJson.data.streamPlaybackAccessToken;
 }
 
 function printPlaybackUrl(channelLogin, playbackAccessToken) {
     const hls_url = `https://usher.ttvnw.net/api/channel/hls/${channelLogin}.m3u8?acmb=e30=&allow_source=true&fast_bread=true&p=&play_session_id=&player_backend=mediaplayer&playlist_include_framerate=true&reassignments_supported=true&sig=${playbackAccessToken.signature}&supported_codecs=avc1&token=${playbackAccessToken.value}&transcode_mode=vbr_v1&cdm=wv&player_version=1.20.0`
-    console.log("Url:", hls_url);
+    process.stdout.write(hls_url);
 }
 if (process.argv.length !== 3) {
     console.error(`Usage: ${process.argv0} main.js [channel name]`);
