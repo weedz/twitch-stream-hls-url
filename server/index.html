@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" method="POST" action="/twitch">
+        <label>
+            <p>Channel name:</p>
+            <input type="text" name="channel">
+        </label>
+        <button class="submit-btn" type="submit">Cast</button>
+    </form>
+    <p id="info"></p>
+    <script>
+        const form = document.getElementById("form");
+        const submitBtn = form.querySelector(".submit-btn");
+        const infoSection = document.getElementById("info");
+
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
+
+            const channel = e.currentTarget.channel.value;
+            if (!channel) {
+                return;
+            }
+
+            infoSection.textContent = `Casting channel "${channel}" to fcast reciever...`;
+
+            submitBtn.disabled = true;
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                infoSection.textContent = "";
+            }, 5000);
+
+            const body = { channel };
+            const response = await fetch("/twitch", {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "content-type": "application/json",
+                }
+            });
+        });
+    </script>
+</body>
+</html>
