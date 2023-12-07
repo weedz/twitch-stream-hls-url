@@ -4,12 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        html,
+        body,
+        input,
+        button,
+        textarea {
+            font-family: monospace;
+            color: #ccc;
+        }
+        html, body {
+            background: #121212;
+            font-size: 16px;
+        }
+
+        button,
+        input {
+            padding: 5px 11px;
+            background: #222;
+            border: 1px solid #777;
+            border-radius: 2px;
+        }
+        button:not(:disabled):hover {
+            background: #2c2c2c;
+        }
+        input:focus,
+        button:focus {
+            outline: solid 1px rgb(228, 0, 120);
+        }
+
+        button:disabled,
+        input:disabled {
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <form id="form" method="POST" action="/twitch">
         <label>
             <p>Channel name:</p>
-            <input type="text" name="channel">
+            <input tabindex="1" autofocus type="text" name="channel">
         </label>
         <button class="submit-btn" type="submit">Cast</button>
     </form>
