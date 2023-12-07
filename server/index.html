@@ -19,8 +19,12 @@
         const submitBtn = form.querySelector(".submit-btn");
         const infoSection = document.getElementById("info");
 
+        let clearInfoTimeout;
+
         form.addEventListener("submit", async e => {
             e.preventDefault();
+
+            window.clearTimeout(clearInfoTimeout);
 
             const channel = e.currentTarget.channel.value;
             if (!channel) {
@@ -30,7 +34,7 @@
             infoSection.textContent = `Casting channel "${channel}" to fcast reciever...`;
 
             submitBtn.disabled = true;
-            setTimeout(() => {
+            clearInfoTimeout = window.setTimeout(() => {
                 submitBtn.disabled = false;
                 infoSection.textContent = "";
             }, 5000);
@@ -43,6 +47,10 @@
                     "content-type": "application/json",
                 }
             });
+            console.log("Response status:", response.ok, response.status);
+            if (!response.ok) {
+                infoSection.textContent = `Request failed. Status code: ${response.status} ${response.statusText}`;
+            }
         });
     </script>
 </body>

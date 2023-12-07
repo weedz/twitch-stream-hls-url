@@ -5,6 +5,8 @@ import { finished } from "node:stream/promises";
 import { fcastTwitchLive } from "../lib/fcast.js";
 import { parseBody, readBody } from "../lib/http.js";
 
+let lastRequest = 0;
+
 /**
  * 
  * @param {http.IncomingMessage} req 
@@ -26,12 +28,19 @@ async function handler(req, reply) {
         }
     } else if (req.method === "POST") {
         if (url.pathname === "/twitch") {
+            if (lastRequest + 5000 > Date.now()) {
+                reply.statusCode = 429;
+                return reply.end();
+            }
+            
             const body = await readBody(req).catch(_ => null);
             if (!body) {
                 req.destroy();
                 reply.statusCode = 400;
                 return reply.end();
             }
+
+            lastRequest = Date.now();
 
             const formData = parseBody(req, body);
 
