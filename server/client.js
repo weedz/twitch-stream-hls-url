@@ -4,6 +4,7 @@ const infoSection = document.getElementById("info");
 
 const favoriteChannelsListEl = document.getElementById("favorite-channels");
 
+/** @type {string[]} */
 let favoriteChannels = [];
 {
     const channels = localStorage.getItem("channels");
@@ -23,7 +24,13 @@ async function loadFavoriteChannels() {
     }
 
     const response = await fetch(`/channels?logins=${favoriteChannels.join(",")}`);
-    const channelsData = await response.json();
+    const channelsResponseData = await response.json();
+
+    const channelsData = channelsResponseData.filter(channel => !!channel);
+
+    // Remove invalid channels from localstorage
+    favoriteChannels = channelsData.map(channel => channel.login);
+    storeFavoriteChannels();
 
     // Sort "live" channels first, then by "channel name" in ascending order 
     channelsData.sort((a, b) => a.stream?.type === "live" && a.login.localeCompare(b.login));
