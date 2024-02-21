@@ -94,8 +94,8 @@ async function handler(req, reply) {
             }
 
             if (process.env.ENABLE_CAST) {
-                const port = 46899;
-                const host = "192.168.1.39";
+                const port = process.env.FCAST_RECIEVER_PORT;
+                const host = process.env.FCAST_RECIEVER_IP;
                 fcastTwitchLive(host, port, channel);
             }
 
