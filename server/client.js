@@ -32,8 +32,13 @@ async function loadFavoriteChannels() {
     favoriteChannels = channelsData.map(channel => channel.login);
     storeFavoriteChannels();
 
-    // Sort "live" channels first, then by "channel name" in ascending order 
-    channelsData.sort((a, b) => a.stream?.type === "live" && a.login.localeCompare(b.login));
+    // Sort "live" channels first, then by "channel name" in ascending order
+    channelsData.sort((a, b) => {
+        if (a.stream !== null && b.stream !== null || a.stream === b.stream) {
+            return a.login.localeCompare(b.login);
+        }
+        return a.stream === null ? 1 : -1
+    });
 
     for (const channel of channelsData) {
         const item = document.createElement("li");
