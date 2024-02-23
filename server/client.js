@@ -26,6 +26,7 @@ async function loadFavoriteChannels() {
     const response = await fetch(`/channels?logins=${favoriteChannels.join(",")}`);
     const channelsResponseData = await response.json();
 
+    /** @type {import("../lib/cache.js").Channel[]} */
     const channelsData = channelsResponseData.filter(channel => !!channel);
 
     // Remove invalid channels from localstorage
@@ -43,10 +44,12 @@ async function loadFavoriteChannels() {
     for (const channel of channelsData) {
         const item = document.createElement("li");
         const channelTitle = document.createElement("p");
-        channelTitle.textContent = `${channel.login}: ${channel.broadcastSettings.title}`;
+        channelTitle.textContent = `${channel.login} (${channel.stream?.game.displayName || "OFFLINE"}): ${channel.broadcastSettings.title}`;
         item.appendChild(channelTitle);
 
         if (channel.stream?.type === "live") {
+            item.classList.add("online");
+
             const castBtn = document.createElement("button");
             castBtn.type = "button";
             castBtn.classList.add("cast-btn");
@@ -55,6 +58,8 @@ async function loadFavoriteChannels() {
                 castChannel(channel.login);
             });
             item.appendChild(castBtn);
+        } else {
+            item.classList.add("offline");
         }
 
         const removeFavoriteBtn = document.createElement("button");

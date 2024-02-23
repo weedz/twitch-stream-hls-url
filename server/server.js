@@ -4,7 +4,7 @@ import { finished } from "node:stream/promises";
 
 import { fcastTwitchLive } from "../lib/fcast.js";
 import { parseBody, readBody } from "../lib/http.js";
-import { getChannelsStatus, getPlaybackUrl } from "../lib/twitch.js";
+import { getChannelsStatus } from "../lib/twitch.js";
 import { ChannelCache } from "../lib/cache.js";
 
 const channelCache = new ChannelCache();
