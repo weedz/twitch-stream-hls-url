@@ -1,0 +1,59 @@
+html,
+body,
+input,
+button,
+textarea {
+    font-family: monospace;
+    color: #ccc;
+}
+
+html,
+body {
+    background: #121212;
+    font-size: 16px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul#favorite-channels {
+    list-style: none;
+}
+
+ul#favorite-channels li {
+    padding: 11px;
+    margin: 7px 0;
+    border: 1px solid #333;
+}
+
+ul#favorite-channels li.online {
+    border-color: springgreen;
+}
+
+ul#favorite-channels li.offline {
+    border-color: salmon;
+}
+
+button,
+input {
+    padding: 5px 11px;
+    background: #222;
+    border: 1px solid #777;
+    border-radius: 2px;
+}
+
+button:not(:disabled):hover {
+    background: #2c2c2c;
+}
+
+input:focus,
+button:focus {
+    outline: solid 1px rgb(228, 0, 120);
+}
+
+button:disabled,
+input:disabled {
+    cursor: not-allowed;
+}

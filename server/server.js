@@ -36,6 +36,12 @@ async function handler(req, reply) {
             await finished(index.pipe(reply));
             return reply.end();
         }
+        if (url.pathname === "/style.css") {
+            const index = fs.createReadStream("./server/style.css");
+            reply.writeHead(200, undefined, { "content-type": "text/css" });
+            await finished(index.pipe(reply));
+            return reply.end();
+        }
         else if (url.pathname === "/channels") {
             const logins = url.searchParams.get("logins")?.split(",");
             if (!logins) {
@@ -55,6 +61,8 @@ async function handler(req, reply) {
                 }
             }
 
+            const cachedChannelsString = cachedChannels.map(channel => channel.login).join(",");
+
             if (channelsToFetch.length !== 0) {
                 const channels = await getChannelsStatus(channelsToFetch);
                 cachedChannels.push(...channels);
@@ -69,6 +77,7 @@ async function handler(req, reply) {
 
             reply.writeHead(200, undefined, {
                 "content-type": "application/json",
+                "x-cached": cachedChannelsString,
             });
             reply.write(JSON.stringify(cachedChannels));
             return reply.end();
