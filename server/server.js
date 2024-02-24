@@ -7,6 +7,21 @@ import { parseBody, readBody } from "../lib/http.js";
 import { getChannelsStatus } from "../lib/twitch.js";
 import { ChannelCache } from "../lib/cache.js";
 
+/**
+ * @param {http.ServerResponse} reply
+ * @param {string} filePath
+ * @param {number | undefined} status
+ * @param {http.OutgoingHttpHeaders | undefined} headers
+ */
+async function sendStaticFile(reply, filePath, status, headers) {
+    const index = fs.createReadStream(filePath);
+    if (status) {
+        reply.writeHead(status, undefined, headers);
+    }
+    await finished(index.pipe(reply));
+    return reply.end();
+}
+
 const channelCache = new ChannelCache();
 
 let lastRequest = 0;
@@ -26,21 +41,13 @@ async function handler(req, reply) {
 
     if (req.method === "GET") {
         if (url.pathname === "/") {
-            const index = fs.createReadStream("./server/index.html");
-            await finished(index.pipe(reply));
-            return reply.end();
+            return await sendStaticFile(reply, "./server/index.html");
         }
         if (url.pathname === "/client.js") {
-            const index = fs.createReadStream("./server/client.js");
-            reply.writeHead(200, undefined, { "content-type": "application/javascript" });
-            await finished(index.pipe(reply));
-            return reply.end();
+            return await sendStaticFile(reply, "./server/client.js", 200, { "content-type": "application/javascript" });
         }
         if (url.pathname === "/style.css") {
-            const index = fs.createReadStream("./server/style.css");
-            reply.writeHead(200, undefined, { "content-type": "text/css" });
-            await finished(index.pipe(reply));
-            return reply.end();
+            return await sendStaticFile(reply, "./server/style.css", 200, { "content-type": "text/css" });
         }
         else if (url.pathname === "/channels") {
             const logins = url.searchParams.get("logins")?.split(",");
