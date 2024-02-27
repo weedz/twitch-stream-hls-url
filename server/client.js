@@ -44,7 +44,15 @@ async function loadFavoriteChannels() {
     for (const channel of channelsData) {
         const item = document.createElement("li");
         const channelTitle = document.createElement("p");
-        channelTitle.textContent = `${channel.login} (${channel.stream?.game.displayName || "OFFLINE"}): ${channel.broadcastSettings.title}`;
+        let game;
+        if (!channel.stream) {
+            game = "OFFLINE";
+        } else if (channel.stream.game) {
+            game = channel.stream.game.displayName;
+        } else {
+            game = "UNKNOWN";
+        }
+        channelTitle.textContent = `${channel.login} (${game}): ${channel.broadcastSettings.title}`;
         item.appendChild(channelTitle);
 
         if (channel.stream?.type === "live") {
