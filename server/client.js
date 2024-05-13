@@ -1,3 +1,5 @@
+import { calculateTimeDifference } from "./lib/time.js";
+
 const form = document.getElementById("form");
 const submitBtn = form.querySelector(".submit-btn");
 const infoSection = document.getElementById("info");
@@ -41,6 +43,8 @@ async function loadFavoriteChannels() {
         return a.stream === null ? 1 : -1
     });
 
+    const dateNow = Date.now();
+
     for (const channel of channelsData) {
         const item = document.createElement("li");
         const channelTitle = document.createElement("p");
@@ -57,6 +61,15 @@ async function loadFavoriteChannels() {
 
         if (channel.stream?.type === "live") {
             item.classList.add("online");
+
+            const channelCreatedDate = new Date(channel.stream.createdAt);
+            if (!Number.isNaN(channelCreatedDate.valueOf())) {
+                const timeDifference = calculateTimeDifference(channelCreatedDate.getTime(), dateNow);
+                const uptimeEl = document.createElement("p");
+                uptimeEl.classList.add("small");
+                uptimeEl.textContent = `Uptime ${timeDifference.hours}:${timeDifference.minutes.toString().padStart(2, "0")}:${timeDifference.seconds.toString().padStart(2, "0")}`;
+                item.appendChild(uptimeEl);
+            }
 
             const castBtn = document.createElement("button");
             castBtn.type = "button";

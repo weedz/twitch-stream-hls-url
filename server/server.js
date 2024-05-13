@@ -46,6 +46,9 @@ async function handler(req, reply) {
         if (url.pathname === "/client.js") {
             return await sendStaticFile(reply, "./server/client.js", 200, { "content-type": "application/javascript" });
         }
+        if (url.pathname === "/lib/time.js") {
+            return await sendStaticFile(reply, "./lib/time.js", 200, { "content-type": "application/javascript" });
+        }
         if (url.pathname === "/style.css") {
             return await sendStaticFile(reply, "./server/style.css", 200, { "content-type": "text/css" });
         }

@@ -57,3 +57,7 @@ button:disabled,
 input:disabled {
     cursor: not-allowed;
 }
+
+.small {
+    font-size: 80%;
+}
