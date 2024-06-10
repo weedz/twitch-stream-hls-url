@@ -1,2 +1,4 @@
 /node_modules
 fcast-master-clients-terminal/
+.env
+.env.local

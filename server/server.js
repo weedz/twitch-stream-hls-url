@@ -129,7 +129,20 @@ async function handler(req, reply) {
     return reply.writeHead(404).end();
 }
 
+const ALLOWED_IPS = process.env.ALLOWED_IPS ? new Set(process.env.ALLOWED_IPS.split(",")) : null;
+function checkIp(ip) {
+    if (!ALLOWED_IPS || !ip) {
+        return true;
+    }
+    return ALLOWED_IPS.has(ip);
+}
+
 const server = http.createServer(async (req, reply) => {
+    if (!checkIp(req.socket.remoteAddress)) {
+        console.log("Unauthorized access from ip:", req.socket.remoteAddress);
+        reply.statusCode = 403;
+        return reply.end();
+    }
     handler(req, reply).catch(err => {
         console.log("Error:", err);
         reply.statusCode = 500;
