@@ -8,6 +8,8 @@ const favoriteChannelsListEl = document.getElementById("favorite-channels");
 
 /** @type {string[]} */
 let favoriteChannels = [];
+/** @type {import("../lib/cache.js").Channel[]} */
+let channelsData = [];
 {
     const channels = localStorage.getItem("channels");
     if (!channels) {
@@ -28,8 +30,7 @@ async function loadFavoriteChannels() {
     const response = await fetch(`/channels?logins=${favoriteChannels.join(",")}`);
     const channelsResponseData = await response.json();
 
-    /** @type {import("../lib/cache.js").Channel[]} */
-    const channelsData = channelsResponseData.filter(channel => !!channel);
+    channelsData = channelsResponseData.filter(channel => !!channel);
 
     // Remove invalid channels from localstorage
     favoriteChannels = channelsData.map(channel => channel.login);
@@ -88,6 +89,9 @@ async function loadFavoriteChannels() {
         removeFavoriteBtn.type = "button";
         removeFavoriteBtn.addEventListener("click", () => {
             const idx = favoriteChannels.indexOf(channel.login);
+            if (idx === -1 || !confirm(`Remove channel '${favoriteChannels[idx]}' from favorites?`)) {
+                return;
+            }
 
             favoriteChannels.splice(idx >>> 0, 1);
             storeFavoriteChannels();
